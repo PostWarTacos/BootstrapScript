@@ -1,0 +1,5 @@
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\obj\Debug\net9.0\BootstrapScript.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\obj\Debug\net9.0\BootstrapScript.AssemblyInfoInputs.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\obj\Debug\net9.0\BootstrapScript.AssemblyInfo.cs
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\obj\Debug\net9.0\BootstrapScript.csproj.CoreCompileInputs.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\obj\Debug\net9.0\BootstrapScript.sourcelink.json
