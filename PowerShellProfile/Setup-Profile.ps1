@@ -5,7 +5,7 @@ Else {
     $user = [System.Environment]::GetFolderPath("UserProfile")
 }
 
-$SharedProfilePath = "$user\Documents\Coding\PowerShell\PS-Management\PowerShellProfile\Main Profile\MinimumProfile.ps1"
+$SharedProfilePath = "$user\Documents\Coding\BootstrapScript\PowerShellProfile\Main Profile\MinimumProfile.ps1"
 $DotSourceLine = ". '$SharedProfilePath'"
 
 # Ensure Admin Privileges

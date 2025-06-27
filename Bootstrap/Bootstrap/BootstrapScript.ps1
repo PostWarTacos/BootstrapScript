@@ -14,9 +14,9 @@ Overwolf    (separate install)
 CurseForge    (separate install)
 AlecaFrame    (separate install)
 NvidiaApp    (separate install)
-Global Protect
+Global Protect      (install script in ChatGPT)
 Canon Printer Drivers   (gonna be super complex)
-KDAN PDF Reader
+KDAN PDF Reader / Liquid Text Editor    (decide which one)
 #>
 
 <# Matt's Apps to Install at Home & Work
@@ -255,68 +255,9 @@ Uninstall and Disable Copilot
 Uninstall and Disable Recall
 #>
 
-<#
-UI/UX & Usability
-
-Disable News and Interests / Widgets
-
-Remove Cortana (if present)
-
-Remove Meet Now from Taskbar
-
-Set Dark Mode (App and System separately)
-
-Enable Clipboard History
-
-
-Privacy & Security
-
-Enable Controlled Folder Access (Defender ransomware protection)
-
-Enable Windows Hello sign-in
-
-
-System/Performance
-
-Disable “Fast Startup”
-
-Disable Indexing on non-OS drives
-
-Trim SSDs via Optimize-Volume
-
-Set Paging File to manual
-
-Enable NTFS long paths
-
-Disable Delivery Optimization (Background Updates)
-
-
-Network
-
-Disable SMBv1
-
-Enable/Disable Network Discovery
-
-Flush DNS and set DNS
-
-Disable NetBIOS over TCP/IP
-
-Set metric priorities for interfaces
-
-
-Maintenance / Cleanup
-
-Clear Temp folders and Downloads older than X days
-
-Clean Windows Update Cache
-
-Disable “Suggested Apps” in Start
-
-Clear Prefetch and Recent File Lists
-#>
-
 <# IN DEV SETTING CHANGES
 PowerShell Profile
+Reset background based on photo saved to Git
 #>
 
 function Set-PowerShellProfile { # Load PowerShell Profile
