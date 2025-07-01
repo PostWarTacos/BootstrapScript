@@ -1,0 +1,17 @@
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\bin\Debug\net8.0-windows\Bootstrap.exe
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\bin\Debug\net8.0-windows\Bootstrap.deps.json
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\bin\Debug\net8.0-windows\Bootstrap.runtimeconfig.json
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\bin\Debug\net8.0-windows\Bootstrap.dll
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\bin\Debug\net8.0-windows\Bootstrap.pdb
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.Form1.resources
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.csproj.GenerateResource.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.AssemblyInfoInputs.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.AssemblyInfo.cs
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.csproj.CoreCompileInputs.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.sourcelink.json
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.dll
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\refint\Bootstrap.dll
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.pdb
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\Bootstrap.genruntimeconfig.cache
+C:\Users\wurtzmt\Documents\Coding\BootstrapScript\Bootstrap\Bootstrap\obj\Debug\net8.0-windows\ref\Bootstrap.dll
