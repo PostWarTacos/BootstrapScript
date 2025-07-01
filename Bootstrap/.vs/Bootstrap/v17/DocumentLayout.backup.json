@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|c:\\users\\wurtzmt\\documents\\coding\\bootstrapscript\\bootstrap\\bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|solutionrelative:bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|c:\\users\\wurtzmt\\documents\\coding\\bootstrapscript\\bootstrap\\bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|solutionrelative:bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|c:\\users\\wurtzmt\\documents\\coding\\bootstrapscript\\bootstrap\\bootstrap\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|solutionrelative:bootstrap\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|c:\\users\\wurtzmt\\documents\\coding\\bootstrapscript\\bootstrap\\bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{966E2859-C866-40F0-A559-B3CB490833E8}|Bootstrap\\Bootstrap.csproj|solutionrelative:bootstrap\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,17 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "Bootstrap\\Form1.Designer.cs",
               "ToolTip": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.Designer.cs",
               "RelativeToolTip": "Bootstrap\\Form1.Designer.cs",
-              "ViewState": "AgIAAHcBAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHQAAAAAAAAAAAAjwIYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-30T21:55:37.281Z",
               "EditorCaption": ""
@@ -40,24 +40,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.cs",
-              "RelativeDocumentMoniker": "Bootstrap\\Form1.cs",
-              "ToolTip": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.cs [Design]",
-              "RelativeToolTip": "Bootstrap\\Form1.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-30T19:41:06.692Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.cs",
               "RelativeDocumentMoniker": "Bootstrap\\Form1.cs",
               "ToolTip": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.cs",
               "RelativeToolTip": "Bootstrap\\Form1.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAADwvyoAAABqAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-30T19:10:20.78Z",
               "EditorCaption": ""
