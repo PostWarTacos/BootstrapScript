@@ -11,8 +11,6 @@ RevoUninstaller.RevoUninstaller
 SteelSeries.GG
 Valve.Steam
 Overwolf    (separate install)
-CurseForge    (separate install)
-AlecaFrame    (separate install)
 NvidiaApp    (separate install)
 Global Protect
 Canon Printer Drivers   (gonna be super complex)
@@ -31,7 +29,6 @@ Microsoft.Sysinternals
 VSCodium.VSCodium
 WinFetch    (separate install)
 Manually install DoD Certs        (https://militarycac.com/windows8.htm#Windows_RT)
-RuckZuck    (separate install)
 Devolutions.RemoteDesktopManager    (work only)
 #>
 
@@ -46,13 +43,18 @@ Microsoft.Teams
 ms office 2021      (https://msgang.com/how-to-download-and-install-office-2021-on-windows-10/)
 #>
 
-function Install { # Universal winget function
+function Install-Standard { # Universal winget function
     param (
         [string]$id  # Define the app to install
     )
     
-    Write-Output "Downloading and installing $($id.split('.')[1])."
-    winget install --id=$id  -e
+    if ($id -eq "Spotify.Spotify") {
+        Write-Output "Installing Spotify for the current user (not as admin)..."
+        winget install --id=$id --scope=user -e
+    } else {
+        Write-Output "Downloading and installing $($id.split('.')[1])."
+        winget install --id=$id -e
+    }
 
     $found = winget list --id=$id 2>$null | Select-String "$id"
     If ([bool]$found){ # Returns $true if found, $false if not
@@ -61,7 +63,7 @@ function Install { # Universal winget function
 }
 
 function Install-Winfetch { # Download and install WinFetch. Not available in winget
-    winget install --id=Microsoft.NuGet  -e
+    winget install --id=Microsoft.NuGet -e
     Install-Script winfetch -Force
 }
 
@@ -91,7 +93,7 @@ function Install-DoDCerts { # Download and install DoD Certs.
     }
     catch {
         Write-Error "Failed to download AllCerts.p7b: $_"
-        Write-Output "If you see a certificate error, please refer to your certificate troubleshooting guide (NOTE1)."
+        Write-Output "If you see a certificate error, please refer to your certificate troubleshooting guide."
         exit
     }
 
@@ -123,7 +125,7 @@ function Install-DoDCerts { # Download and install DoD Certs.
     }
     catch {
         Write-Error "Failed to download DoDRoot3-6.p7b: $_"
-        Write-Output "If you see a certificate error, please refer to your certificate troubleshooting guide (NOTE1)."
+        Write-Output "If you see a certificate error, please refer to your certificate troubleshooting guide."
         exit
     }
 
@@ -156,7 +158,6 @@ function Install-DoDCerts { # Download and install DoD Certs.
 
     Write-Host "Certificate installation complete." -ForegroundColor Yellow
     Write-Host "Reminder: If you need to clear installed certificates manually, follow your manual clearance guide (NOTE2)." -ForegroundColor Yellow
-
 }
 
 function Install-NvidiaApp { # Download and install Nvidia App. Not available in winget.    #~~# WORKS IN WIN11 #~~#
