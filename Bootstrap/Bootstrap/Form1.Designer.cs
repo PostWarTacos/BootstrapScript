@@ -30,15 +30,11 @@
         {
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
-            tabPage2 = new TabPage();
-            instButton = new Button();
-            uninstButton = new Button();
-            upgradeButton = new Button();
-            applyButton = new Button();
             targCombo1 = new ComboBox();
             profCombo1 = new ComboBox();
-            targCombo2 = new ComboBox();
-            profCombo2 = new ComboBox();
+            instButton = new Button();
+            uninstButton = new Button();
+            updateAllButton = new Button();
             checkBox1 = new CheckBox();
             checkBox2 = new CheckBox();
             checkBox3 = new CheckBox();
@@ -49,6 +45,10 @@
             checkBox8 = new CheckBox();
             checkBox9 = new CheckBox();
             checkBox10 = new CheckBox();
+            tabPage2 = new TabPage();
+            targCombo2 = new ComboBox();
+            profCombo2 = new ComboBox();
+            applyButton = new Button();
             checkBox11 = new CheckBox();
             checkBox12 = new CheckBox();
             checkBox13 = new CheckBox();
@@ -83,7 +83,7 @@
             tabPage1.Controls.Add(profCombo1);
             tabPage1.Controls.Add(instButton);
             tabPage1.Controls.Add(uninstButton);
-            tabPage1.Controls.Add(upgradeButton);
+            tabPage1.Controls.Add(updateAllButton);
             tabPage1.Controls.Add(checkBox1);
             tabPage1.Controls.Add(checkBox2);
             tabPage1.Controls.Add(checkBox3);
@@ -101,28 +101,25 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Install/Uninstall";
             // 
-            // tabPage2
+            // targCombo1
             // 
-            tabPage2.BackColor = Color.DarkGray;
-            tabPage2.Controls.Add(targCombo2);
-            tabPage2.Controls.Add(profCombo2);
-            tabPage2.Controls.Add(applyButton);
-            tabPage2.Controls.Add(checkBox11);
-            tabPage2.Controls.Add(checkBox12);
-            tabPage2.Controls.Add(checkBox13);
-            tabPage2.Controls.Add(checkBox14);
-            tabPage2.Controls.Add(checkBox15);
-            tabPage2.Controls.Add(checkBox16);
-            tabPage2.Controls.Add(checkBox17);
-            tabPage2.Controls.Add(checkBox18);
-            tabPage2.Controls.Add(checkBox19);
-            tabPage2.Controls.Add(checkBox20);
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(768, 398);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "Tweaks & Settings";
+            targCombo1.FormattingEnabled = true;
+            targCombo1.Items.AddRange(new object[] { "Matt's Desktop", "Ashley's Desktop" });
+            targCombo1.Location = new Point(6, 25);
+            targCombo1.Name = "targCombo1";
+            targCombo1.Size = new Size(121, 23);
+            targCombo1.TabIndex = 0;
+            targCombo1.Text = "Target PC";
+            // 
+            // profCombo1
+            // 
+            profCombo1.FormattingEnabled = true;
+            profCombo1.Items.AddRange(new object[] { "Home", "Work", "Mobile" });
+            profCombo1.Location = new Point(133, 25);
+            profCombo1.Name = "profCombo1";
+            profCombo1.Size = new Size(121, 23);
+            profCombo1.TabIndex = 16;
+            profCombo1.Text = "Profile";
             // 
             // instButton
             // 
@@ -143,61 +140,15 @@
             uninstButton.Text = "UNINSTALL";
             uninstButton.UseVisualStyleBackColor = true;
             // 
-            // upgradeButton
+            // updateAllButton
             // 
-            upgradeButton.Location = new Point(439, 25);
-            upgradeButton.Name = "upgradeButton";
-            upgradeButton.Size = new Size(81, 23);
-            upgradeButton.TabIndex = 15;
-            upgradeButton.Text = "UPDATE";
-            upgradeButton.UseVisualStyleBackColor = true;
-            // 
-            // applyButton
-            // 
-            applyButton.Location = new Point(260, 25);
-            applyButton.Name = "applyButton";
-            applyButton.Size = new Size(81, 23);
-            applyButton.TabIndex = 32;
-            applyButton.Text = "APPLY";
-            applyButton.UseVisualStyleBackColor = true;
-            // 
-            // targCombo1
-            // 
-            targCombo1.FormattingEnabled = true;
-            targCombo1.Items.AddRange(new object[] { "Matt's Desktop", "Ashley's Desktop" });
-            targCombo1.Location = new Point(6, 25);
-            targCombo1.Name = "targCombo1";
-            targCombo1.Size = new Size(121, 23);
-            targCombo1.TabIndex = 0;
-            targCombo1.Text = "Target PC";
-            // 
-            // profCombo1
-            // 
-            profCombo1.FormattingEnabled = true;
-            profCombo1.Items.AddRange(new object[] { "Home", "Work", "Mobile" });
-            profCombo1.Location = new Point(133, 25);
-            profCombo1.Name = "profCombo";
-            profCombo1.Size = new Size(121, 23);
-            profCombo1.TabIndex = 16;
-            profCombo1.Text = "Profile";
-            // 
-            // targCombo2
-            // 
-            targCombo2.FormattingEnabled = true;
-            targCombo2.Location = new Point(133, 25);
-            targCombo2.Name = "targCombo2";
-            targCombo2.Size = new Size(121, 23);
-            targCombo2.TabIndex = 20;
-            targCombo2.Text = "Profile";
-            // 
-            // profCombo2
-            // 
-            profCombo2.FormattingEnabled = true;
-            profCombo2.Location = new Point(6, 25);
-            profCombo2.Name = "profCombo2";
-            profCombo2.Size = new Size(121, 23);
-            profCombo2.TabIndex = 18;
-            profCombo2.Text = "Target PC";
+            updateAllButton.Location = new Point(439, 25);
+            updateAllButton.Name = "updateAllButton";
+            updateAllButton.Size = new Size(98, 23);
+            updateAllButton.TabIndex = 15;
+            updateAllButton.Text = "UPDATE ALL";
+            updateAllButton.UseVisualStyleBackColor = true;
+            updateAllButton.Click += updateAllButton_Click;
             // 
             // checkBox1
             // 
@@ -298,6 +249,56 @@
             checkBox10.TabIndex = 11;
             checkBox10.Text = "checkBox10";
             checkBox10.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.BackColor = Color.DarkGray;
+            tabPage2.Controls.Add(targCombo2);
+            tabPage2.Controls.Add(profCombo2);
+            tabPage2.Controls.Add(applyButton);
+            tabPage2.Controls.Add(checkBox11);
+            tabPage2.Controls.Add(checkBox12);
+            tabPage2.Controls.Add(checkBox13);
+            tabPage2.Controls.Add(checkBox14);
+            tabPage2.Controls.Add(checkBox15);
+            tabPage2.Controls.Add(checkBox16);
+            tabPage2.Controls.Add(checkBox17);
+            tabPage2.Controls.Add(checkBox18);
+            tabPage2.Controls.Add(checkBox19);
+            tabPage2.Controls.Add(checkBox20);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(768, 398);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Tweaks & Settings";
+            // 
+            // targCombo2
+            // 
+            targCombo2.FormattingEnabled = true;
+            targCombo2.Location = new Point(133, 25);
+            targCombo2.Name = "targCombo2";
+            targCombo2.Size = new Size(121, 23);
+            targCombo2.TabIndex = 20;
+            targCombo2.Text = "Profile";
+            // 
+            // profCombo2
+            // 
+            profCombo2.FormattingEnabled = true;
+            profCombo2.Location = new Point(6, 25);
+            profCombo2.Name = "profCombo2";
+            profCombo2.Size = new Size(121, 23);
+            profCombo2.TabIndex = 18;
+            profCombo2.Text = "Target PC";
+            // 
+            // applyButton
+            // 
+            applyButton.Location = new Point(260, 25);
+            applyButton.Name = "applyButton";
+            applyButton.Size = new Size(81, 23);
+            applyButton.TabIndex = 32;
+            applyButton.Text = "APPLY";
+            applyButton.UseVisualStyleBackColor = true;
             // 
             // checkBox11
             // 
@@ -409,11 +410,11 @@
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
-            tabPage2.ResumeLayout(false);
-            tabPage2.PerformLayout();
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -423,7 +424,7 @@
         private TabPage tabPage2;
         private Button instButton;
         private Button uninstButton;
-        private Button upgradeButton;
+        private Button updateAllButton;
         private Button applyButton;
         private ComboBox targCombo1;
         private ComboBox profCombo1;

@@ -76,7 +76,7 @@ namespace Bootstrap
         {
 
         }
-        
+
         // Buttons in tab 1
         private void install_Click(object sender, EventArgs e)
         {
@@ -123,7 +123,34 @@ namespace Bootstrap
             string profile = profileTab1;
             string scriptPath = scriptPathTab1;
 
-            // ... logic for this button ...
+            // Loop through all CheckBox controls in tabPage1
+            foreach (var control in tabPage1.Controls)
+            {
+                if (control is CheckBox cb && cb.Checked)
+                {
+                    string appName = cb.Text;
+
+                    if (appName == "NvidiaApp")
+                    {
+                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-NvidiaApp\"");
+                    }
+                    else if (appName == "Overwolf")
+                    {
+                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Overwolf\"");
+                    }
+                    // Standard uninstall
+                    else if (appIdMap.TryGetValue(appName, out var appId))
+                    {
+                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Standard -id '{appId}'\"");
+                    }
+                }
+            }
+        }
+
+        private void updateAllButton_Click(object sender, EventArgs e)
+        {
+            string scriptPath = scriptPathTab1;
+            RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Update-AllApps\"");
         }
 
         // Button in tab 2

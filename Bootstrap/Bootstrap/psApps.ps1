@@ -1,48 +1,49 @@
 <# Matt's Apps to Install at Home
-7zip.7zip
-Brave.Brave
-EpicGames.EpicGamesLauncher
-GIMP.GIMP
-Insecure.Nmap
-Mozilla.Thunderbird
-Oracle.VirtualBox
-PrivateInternetAccess.PrivateInternetAccess
-RevoUninstaller.RevoUninstaller
-SteelSeries.GG
-Valve.Steam
-Overwolf    (separate install)
-NvidiaApp    (separate install)
 Global Protect
-Canon Printer Drivers   (gonna be super complex)
+Canon Printer Drivers
 KDAN PDF Reader
 #>
 
-<# Matt's Apps to Install at Home & Work
-AgileBits.1Password
-Corsair.iCUE.5
-Git.Git
-JanDeDobbeleer.OhMyPosh
-Microsoft.WindowsTerminal
-Notion.Notion
-Spotify.Spotify         (NEEDS TO RUNAS USER NOT ADM)
-Microsoft.Sysinternals
-VSCodium.VSCodium
-WinFetch    (separate install)
-Manually install DoD Certs        (https://militarycac.com/windows8.htm#Windows_RT)
-Devolutions.RemoteDesktopManager    (work only)
-#>
-
 <# Other Apps to List
-Ubisoft.Connect
-ElectronicArts.EADesktop
-WiresharkFoundation.Wireshark
-Discord.Discord
-GOG.Galaxy
-Zoom.Zoom
-Microsoft.Teams
 ms office 2021      (https://msgang.com/how-to-download-and-install-office-2021-on-windows-10/)
 #>
 
+<#
+.SYNOPSIS
+    Automated application installation and removal for Windows using winget and custom logic.
+
+.DESCRIPTION
+    This script provides functions to install and uninstall a curated set of applications for home and work environments.
+    It supports both winget-based and manual installations, as well as management of DoD certificates.
+    The script is intended to streamline the setup and maintenance of a Windows system with essential tools and utilities.
+
+.NOTES
+    Author: Matt
+    Requires: Windows PowerShell 5.1 or later, winget, administrative privileges for some operations.
+#>
+
+$AppProfiles = @{
+    "Home" = @(
+        "7-Zip", "Brave", "Epic Games Launcher", "GIMP",
+        "Nmap", "Thunderbird", "VirtualBox",
+        "Private Internet Access", "Revo Uninstaller",
+        "SteelSeries GG", "Steam", "Overwolf", "Nvidia App",
+        "Global Protect", "Canon Printer Drivers", "KDAN PDF Reader"
+    )
+    "Home & Work" = @(
+        "1Password", "Corsair iCUE 5", "Git", "Oh My Posh",
+        "Windows Terminal", "Notion", "Spotify",
+        "Sysinternals", "VSCodium", "WinFetch",
+        "Remote Desktop Manager"
+    )
+    "Other" = @(
+        "Ubisoft Connect", "EA Desktop", "Wireshark",
+        "Discord", "GOG Galaxy", "Zoom", "Microsoft Teams", "MS Office 2021"
+    )
+}
+
+
+# -------------------- Install functions -------------------- #
 function Install-Standard { # Universal winget function
     param (
         [string]$id  # Define the app to install
@@ -198,4 +199,183 @@ function Install-Overwolf { # Download and install Overwolf. Not available in wi
     } else {
         Write-Output "Failed to retrieve the latest Overwolf installer."
     } 
+}
+
+
+# -------------------- Uninstall functions -------------------- #
+function Uninstall-Standard {
+    param (
+        [string]$id
+    )
+    Write-Output "Uninstalling $($id.split('.')[1])..."
+    winget uninstall --id=$id -e
+    $found = winget list --id=$id 2>$null | Select-String "$id"
+    if (-not [bool]$found) {
+        Write-Output "$($id.split('.')[1]) uninstalled successfully."
+    } else {
+        Write-Output "Failed to uninstall $($id.split('.')[1])."
+    }
+}
+
+function Uninstall-NvidiaApp {
+    Write-Output "Attempting to uninstall Nvidia App..."
+    Get-AppxPackage -Name NVIDIACorp.NVIDIAControlPanel | Remove-AppxPackage
+}
+
+function Uninstall-Overwolf {
+    Write-Output "Attempting to uninstall Overwolf..."
+    $uninstallKey = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    $overwolf = Get-ChildItem $uninstallKey | Where-Object {
+        (Get-ItemProperty $_.PSPath).DisplayName -like "*Overwolf*"
+    }
+    foreach ($item in $overwolf) {
+        $uninstallString = (Get-ItemProperty $item.PSPath).UninstallString
+        if ($uninstallString) {
+            Start-Process -FilePath "cmd.exe" -ArgumentList "/c $uninstallString /silent" -Wait
+        }
+    }
+}
+
+function Uninstall-DoDCerts {
+    <#
+    .SYNOPSIS
+        Removes DoD certificates previously installed by Install-DoDCerts.
+    .DESCRIPTION
+        Downloads the latest AllCerts.p7b and DoDRoot3-6.p7b files, extracts the certificates,
+        and removes matching certificates from the CA and ROOT stores by thumbprint.
+    #>
+
+    # URLs for the certificate bundles
+    $allCertsUrl = "https://militarycac.com/maccerts/AllCerts.p7b"
+    $doDRootUrl = "https://militarycac.com/CACDrivers/DoDRoot3-6.p7b"
+
+    # Temporary file paths
+    $tempPath = [System.IO.Path]::GetTempPath()
+    $allCertsFile = Join-Path $tempPath "AllCerts.p7b"
+    $doDRootFile = Join-Path $tempPath "DoDRoot3-6.p7b"
+
+    # Download the p7b files
+    Write-Output "Downloading AllCerts.p7b and DoDRoot3-6.p7b..."
+    Invoke-WebRequest -Uri $allCertsUrl -OutFile $allCertsFile -UseBasicParsing
+    Invoke-WebRequest -Uri $doDRootUrl -OutFile $doDRootFile -UseBasicParsing
+
+    # Helper: Extract thumbprints from a p7b file
+    function Get-ThumbprintsFromP7B {
+        param([string]$p7bPath)
+        $certs = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
+        $certs.Import($p7bPath)
+        return $certs | ForEach-Object { $_.Thumbprint }
+    }
+
+    # Get thumbprints from both p7b files
+    $thumbprints = @()
+    $thumbprints += Get-ThumbprintsFromP7B -p7bPath $allCertsFile
+    $thumbprints += Get-ThumbprintsFromP7B -p7bPath $doDRootFile
+    $thumbprints = $thumbprints | Sort-Object -Unique
+
+    # Remove from CA and ROOT stores
+    foreach ($storeName in @("CA", "ROOT")) {
+        $storePath = "Cert:\LocalMachine\$storeName"
+        $storeCerts = Get-ChildItem -Path $storePath
+        $toRemove = $storeCerts | Where-Object { $thumbprints -contains $_.Thumbprint }
+        if ($toRemove.Count -eq 0) {
+            Write-Output "No matching certificates found in $storeName."
+            continue
+        }
+        Write-Output "Removing $($toRemove.Count) certificate(s) from $storeName..."
+        foreach ($cert in $toRemove) {
+            try {
+                Remove-Item -Path $cert.PSPath -Force
+                Write-Output "Removed: $($cert.Subject)"
+            } catch {
+                Write-Error "Failed to remove certificate: $($cert.Subject) - $_"
+            }
+        }
+    }
+
+    # Clean up temp files
+    Remove-Item -Path $allCertsFile, $doDRootFile -Force
+
+    Write-Host "DoD certificate removal process complete." -ForegroundColor Yellow
+}
+
+function Update-AllApps {
+    $installedApps = winget list | Select-String '^\S' | ForEach-Object {
+        $fields = $_.Line -split '\s{2,}'
+        [PSCustomObject]@{
+            Name = $fields[0]
+            Id   = $fields[1]
+            CurrentVersion = if ($fields.Count -ge 3) { $fields[2] } else { "" }
+        }
+    }
+
+    $results = @()
+
+    foreach ($app in $installedApps) {
+        $status = "Unknown"
+        $newVersion = ""
+        try {
+            $upgradeInfo = winget upgrade --id "$($app.Id)" -e 2>&1
+            if ($upgradeInfo -match "No applicable update found") {
+                $status = "Up-to-date"
+                $newVersion = $app.CurrentVersion
+            } elseif ($upgradeInfo -match "The following packages have been found") {
+                $status = "Upgradable"
+                # Try to extract new version from upgradeInfo
+                $verMatch = $upgradeInfo | Select-String -Pattern '(\d+\.\d+(\.\d+)*)\s*->\s*(\d+\.\d+(\.\d+)*)'
+                if ($verMatch) {
+                    $newVersion = $verMatch.Matches[0].Groups[3].Value
+                } else {
+                    # Fallback: try to extract from table
+                    $tableLine = $upgradeInfo | Select-String -Pattern "$($app.Id)"
+                    if ($tableLine) {
+                        $tableFields = $tableLine.Line -split '\s{2,}'
+                        if ($tableFields.Count -ge 4) {
+                            $newVersion = $tableFields[3]
+                        }
+                    }
+                }
+            } elseif ($upgradeInfo -match "No package found matching input criteria") {
+                $status = "Not in WinGet repo"
+                $newVersion = ""
+            } elseif ($upgradeInfo -match "error" -or $upgradeInfo -match "failed") {
+                $status = "Error"
+                $newVersion = ""
+            }
+        } catch {
+            $status = "Error"
+            $newVersion = ""
+        }
+        $results += [PSCustomObject]@{
+            Name           = $app.Name
+            Id             = $app.Id
+            CurrentVersion = $app.CurrentVersion
+            NewVersion     = $newVersion
+            Status         = $status
+        }
+    }
+
+    # Display results before updating
+    Write-Host "`nUpdate Status for Installed Apps:`n" -ForegroundColor Cyan
+    $results | Format-Table Name, Id, CurrentVersion, NewVersion, Status -AutoSize
+
+    # Confirm and update only upgradable apps
+    $toUpdate = $results | Where-Object { $_.Status -eq "Upgradable" }
+    if ($toUpdate.Count -gt 0) {
+        Write-Host "`nUpdating $($toUpdate.Count) app(s):" -ForegroundColor Yellow
+        foreach ($app in $toUpdate) {
+            try {
+                $updateResult = winget upgrade --id "$($app.Id)" -e --silent 2>&1
+                if ($updateResult -match "Successfully upgraded" -or $updateResult -match "Upgrade succeeded") {
+                    Write-Host "$($app.Name) updated successfully." -ForegroundColor Green
+                } else {
+                    Write-Host "$($app.Name) update failed: $updateResult" -ForegroundColor Red
+                }
+            } catch {
+                Write-Host "$($app.Name) update failed: $_" -ForegroundColor Red
+            }
+        }
+    } else {
+        Write-Host "`nNo apps require updating." -ForegroundColor Green
+    }
 }
