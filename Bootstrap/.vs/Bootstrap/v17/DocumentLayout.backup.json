@@ -18,8 +18,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
@@ -32,7 +36,7 @@
               "RelativeDocumentMoniker": "Bootstrap\\psApps.ps1",
               "ToolTip": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\psApps.ps1",
               "RelativeToolTip": "Bootstrap\\psApps.ps1",
-              "ViewState": "AgIAAGgBAAAAAAAAAAAqwC4BAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAACcBAAAAAAAAAAAqwGYBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-07-23T19:53:52.728Z",
               "EditorCaption": ""
@@ -45,10 +49,9 @@
               "RelativeDocumentMoniker": "Bootstrap\\Form1.cs",
               "ToolTip": "C:\\Users\\wurtzmt\\Documents\\Coding\\BootstrapScript\\Bootstrap\\Bootstrap\\Form1.cs",
               "RelativeToolTip": "Bootstrap\\Form1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJkAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAkwJkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-02T21:06:13.008Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-02T21:06:13.008Z"
             }
           ]
         }

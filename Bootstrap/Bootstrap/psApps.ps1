@@ -299,65 +299,64 @@ function Uninstall-DoDCerts {
     Write-Host "DoD certificate removal process complete." -ForegroundColor Yellow
 }
 
-function Update-AllApps {
-    $installedApps = winget list | Select-String '^\S' | ForEach-Object {
-        $fields = $_.Line -split '\s{2,}'
-        [PSCustomObject]@{
-            Name = $fields[0]
-            Id   = $fields[1]
-            CurrentVersion = if ($fields.Count -ge 3) { $fields[2] } else { "" }
-        }
+function Compare-Version {
+    param (
+        [string]$v1,
+        [string]$v2
+    )
+    $a1 = $v1 -replace '[^0-9\.]', '' -split '\.'
+    $a2 = $v2 -replace '[^0-9\.]', '' -split '\.'
+    $len = [Math]::Max($a1.Count, $a2.Count)
+    for ($i = 0; $i -lt $len; $i++) {
+        $n1 = if ($i -lt $a1.Count) { [int]$a1[$i] } else { 0 }
+        $n2 = if ($i -lt $a2.Count) { [int]$a2[$i] } else { 0 }
+        if ($n1 -gt $n2) { return 1 }
+        if ($n1 -lt $n2) { return -1 }
     }
+    return 0
+}
 
+function Update-AllApps {
     $results = @()
 
-    foreach ($app in $installedApps) {
-        $status = "Unknown"
-        $newVersion = ""
-        try {
-            $upgradeInfo = winget upgrade --id "$($app.Id)" -e 2>&1
-            if ($upgradeInfo -match "No applicable update found") {
-                $status = "Up-to-date"
-                $newVersion = $app.CurrentVersion
-            } elseif ($upgradeInfo -match "The following packages have been found") {
-                $status = "Upgradable"
-                # Try to extract new version from upgradeInfo
-                $verMatch = $upgradeInfo | Select-String -Pattern '(\d+\.\d+(\.\d+)*)\s*->\s*(\d+\.\d+(\.\d+)*)'
-                if ($verMatch) {
-                    $newVersion = $verMatch.Matches[0].Groups[3].Value
-                } else {
-                    # Fallback: try to extract from table
-                    $tableLine = $upgradeInfo | Select-String -Pattern "$($app.Id)"
-                    if ($tableLine) {
-                        $tableFields = $tableLine.Line -split '\s{2,}'
-                        if ($tableFields.Count -ge 4) {
-                            $newVersion = $tableFields[3]
-                        }
-                    }
-                }
-            } elseif ($upgradeInfo -match "No package found matching input criteria") {
-                $status = "Not in WinGet repo"
-                $newVersion = ""
-            } elseif ($upgradeInfo -match "error" -or $upgradeInfo -match "failed") {
-                $status = "Error"
-                $newVersion = ""
-            }
-        } catch {
-            $status = "Error"
-            $newVersion = ""
+    $installedApps = winget list | Select-String '^\S' | Select-Object -Skip 2 | ForEach-Object {
+        $line = $_.Line.Trim()
+        $line = $line -replace '¦', ' '
+        $versions = [regex]::Matches($line, '\d+(\.\d+){1,}(\.[a-zA-Z0-9]+)?')
+        $currentVersion = if ($versions.Count -gt 0) { $versions[$versions.Count-1].Value } else { "" }
+
+        $lineWithoutVersion = $line
+        foreach ($v in $versions) { $lineWithoutVersion = $lineWithoutVersion -replace [regex]::Escape($v.Value), "" }
+        $lineWithoutVersion = $lineWithoutVersion -replace '\s*winget$', ""
+        $fields = $lineWithoutVersion -split '\s{2,}'
+        $name = $fields[0]
+        $id = ""
+        if ($fields.Count -ge 2) { $id = $fields[1] }
+
+        $showInfo = winget show --id $id 2>&1
+        if ($showInfo -match "No package found matching input criteria") {
+            return
         }
-        $results += [PSCustomObject]@{
-            Name           = $app.Name
-            Id             = $app.Id
-            CurrentVersion = $app.CurrentVersion
-            NewVersion     = $newVersion
-            Status         = $status
+        $availableVersion = ""
+        $verLine = $showInfo | Select-String "^Version\s*:\s*(.+)$"
+        if ($verLine) {
+            $availableVersion = $verLine.Matches[0].Groups[1].Value.Trim()
+        }
+
+        # Only add if available version is newer
+        if ($availableVersion -and $currentVersion -and (Compare-Version $availableVersion $currentVersion) -gt 0) {
+            $results += [PSCustomObject]@{
+                Name = $name
+                Id = $id
+                CurrentVersion = $currentVersion
+                NewVersion = $availableVersion
+            }
         }
     }
 
-    # Display results before updating
-    Write-Host "`nUpdate Status for Installed Apps:`n" -ForegroundColor Cyan
-    $results | Format-Table Name, Id, CurrentVersion, NewVersion, Status -AutoSize
+    Write-Host "`nApps with available updates:`n" -ForegroundColor Cyan
+    $results | Format-Table Name, Id, CurrentVersion, NewVersion -AutoSize
+}
 
     # Confirm and update only upgradable apps
     $toUpdate = $results | Where-Object { $_.Status -eq "Upgradable" }
