@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Bootstrap
 {
@@ -60,7 +61,7 @@ namespace Bootstrap
         // Tab 1 variables
         private string targetTab1 => targCombo1.SelectedItem?.ToString() ?? "No selection";
         private string profileTab1 => profCombo1.SelectedItem?.ToString() ?? "No selection";
-        private string scriptPathTab1 => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "psApps.ps1");
+        private string scriptPathTab1 => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "psapps.ps1");
 
         // Tab 2 variables
         private string targetTab2 => targCombo2.SelectedItem?.ToString() ?? "No selection";
@@ -74,7 +75,13 @@ namespace Bootstrap
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Show all embedded resource names for debugging
+            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            MessageBox.Show(string.Join("\n", names));
 
+            string scriptPath = scriptPathTab1;
+            // The resource name is usually "<DefaultNamespace>.<filename>"
+            ExtractEmbeddedScript("Bootstrap.psApps.ps1", scriptPath);
         }
 
         // Buttons in tab 1
@@ -94,24 +101,24 @@ namespace Bootstrap
                     // Handle special-case installs
                     if (appName == "DoD Certs")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-DoDCerts\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-DoDCerts; pause\"");
                     }
                     else if (appName == "NvidiaApp")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-NvidiaApp\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-NvidiaApp; pause\"");
                     }
                     else if (appName == "Overwolf")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Overwolf\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Overwolf; pause\"");
                     }
                     else if (appName == "WinFetch")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Winfetch\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Winfetch; pause\"");
                     }
                     // Standard install
                     else if (appIdMap.TryGetValue(appName, out var appId))
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Standard -id '{appId}'\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Install-Standard -id '{appId}'; pause\"");
                     }
                 }
             }
@@ -132,16 +139,16 @@ namespace Bootstrap
 
                     if (appName == "NvidiaApp")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-NvidiaApp\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-NvidiaApp; pause\"");
                     }
                     else if (appName == "Overwolf")
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Overwolf\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Overwolf; pause\"");
                     }
                     // Standard uninstall
                     else if (appIdMap.TryGetValue(appName, out var appId))
                     {
-                        RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Standard -id '{appId}'\"");
+                        RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Uninstall-Standard -id '{appId}'; pause\"");
                     }
                 }
             }
@@ -150,7 +157,13 @@ namespace Bootstrap
         private void updateAllButton_Click(object sender, EventArgs e)
         {
             string scriptPath = scriptPathTab1;
-            RunPowerShell($"-NoProfile -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Update-AllApps\"");
+
+            if (!File.Exists(scriptPath))
+            {
+                MessageBox.Show($"Script not found: {scriptPath}", "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            RunPowerShell($"-NoExit -ExecutionPolicy Bypass -Command \". '{scriptPath}'; Update-AllApps; pause\"");
         }
 
         // Button in tab 2
@@ -169,29 +182,28 @@ namespace Bootstrap
             {
                 FileName = "powershell.exe",
                 Arguments = arguments,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
+                UseShellExecute = true, // Must be true to open a new window
+                CreateNoWindow = false  // Show the window
             };
 
-            using (Process proc = new Process())
-            {
-                proc.StartInfo = psi;
-                proc.Start();
-                string output = proc.StandardOutput.ReadToEnd();
-                string error = proc.StandardError.ReadToEnd();
-                proc.WaitForExit();
+            Process.Start(psi);
+        }
 
-                if (!string.IsNullOrEmpty(error))
-                {
-                    MessageBox.Show(error, "PowerShell Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show(output, "PowerShell Output", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
+        private void ExtractEmbeddedScript(string resourceName, string outputPath)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+                throw new FileNotFoundException("Resource not found: " + resourceName);
+
+            using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
+            stream.CopyTo(fileStream);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            flowLayoutPanel1.Visible = !
+            flowLayoutPanel1.Visible;
         }
     }
 }

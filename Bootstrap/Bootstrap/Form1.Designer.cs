@@ -30,21 +30,18 @@
         {
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            checkBox1 = new CheckBox();
+            checkBox2 = new CheckBox();
+            checkBox3 = new CheckBox();
+            label1 = new Label();
+            label2 = new Label();
+            label3 = new Label();
             targCombo1 = new ComboBox();
             profCombo1 = new ComboBox();
             instButton = new Button();
             uninstButton = new Button();
             updateAllButton = new Button();
-            checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
-            checkBox3 = new CheckBox();
-            checkBox4 = new CheckBox();
-            checkBox5 = new CheckBox();
-            checkBox6 = new CheckBox();
-            checkBox7 = new CheckBox();
-            checkBox8 = new CheckBox();
-            checkBox9 = new CheckBox();
-            checkBox10 = new CheckBox();
             tabPage2 = new TabPage();
             targCombo2 = new ComboBox();
             profCombo2 = new ComboBox();
@@ -59,8 +56,11 @@
             checkBox18 = new CheckBox();
             checkBox19 = new CheckBox();
             checkBox20 = new CheckBox();
+            button1 = new Button();
+            button2 = new Button();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             tabPage2.SuspendLayout();
             SuspendLayout();
             // 
@@ -79,27 +79,93 @@
             // 
             tabPage1.BackColor = Color.DarkGray;
             tabPage1.BackgroundImageLayout = ImageLayout.None;
+            tabPage1.Controls.Add(button2);
+            tabPage1.Controls.Add(flowLayoutPanel1);
             tabPage1.Controls.Add(targCombo1);
             tabPage1.Controls.Add(profCombo1);
             tabPage1.Controls.Add(instButton);
             tabPage1.Controls.Add(uninstButton);
             tabPage1.Controls.Add(updateAllButton);
-            tabPage1.Controls.Add(checkBox1);
-            tabPage1.Controls.Add(checkBox2);
-            tabPage1.Controls.Add(checkBox3);
-            tabPage1.Controls.Add(checkBox4);
-            tabPage1.Controls.Add(checkBox5);
-            tabPage1.Controls.Add(checkBox6);
-            tabPage1.Controls.Add(checkBox7);
-            tabPage1.Controls.Add(checkBox8);
-            tabPage1.Controls.Add(checkBox9);
-            tabPage1.Controls.Add(checkBox10);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
             tabPage1.Size = new Size(768, 398);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Install/Uninstall";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.AutoScroll = true;
+            flowLayoutPanel1.Controls.Add(checkBox1);
+            flowLayoutPanel1.Controls.Add(checkBox2);
+            flowLayoutPanel1.Controls.Add(checkBox3);
+            flowLayoutPanel1.Controls.Add(label1);
+            flowLayoutPanel1.Controls.Add(label2);
+            flowLayoutPanel1.Controls.Add(label3);
+            flowLayoutPanel1.Controls.Add(button1);
+            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+            flowLayoutPanel1.Location = new Point(33, 94);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(701, 282);
+            flowLayoutPanel1.TabIndex = 17;
+            flowLayoutPanel1.WrapContents = false;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(3, 3);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(88, 19);
+            checkBox1.TabIndex = 0;
+            checkBox1.Text = "checkBox1";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new Point(3, 28);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(88, 19);
+            checkBox2.TabIndex = 1;
+            checkBox2.Text = "checkBox2";
+            checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            checkBox3.AutoSize = true;
+            checkBox3.Location = new Point(3, 53);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new Size(88, 19);
+            checkBox3.TabIndex = 2;
+            checkBox3.Text = "checkBox3";
+            checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(3, 75);
+            label1.Name = "label1";
+            label1.Size = new Size(40, 15);
+            label1.TabIndex = 3;
+            label1.Text = "label1";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(3, 90);
+            label2.Name = "label2";
+            label2.Size = new Size(40, 15);
+            label2.TabIndex = 4;
+            label2.Text = "label2";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(3, 105);
+            label3.Name = "label3";
+            label3.Size = new Size(40, 15);
+            label3.TabIndex = 5;
+            label3.Text = "label3";
             // 
             // targCombo1
             // 
@@ -149,106 +215,6 @@
             updateAllButton.Text = "UPDATE ALL";
             updateAllButton.UseVisualStyleBackColor = true;
             updateAllButton.Click += updateAllButton_Click;
-            // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(39, 76);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(88, 19);
-            checkBox1.TabIndex = 2;
-            checkBox1.Text = "checkBox1";
-            checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(39, 101);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(88, 19);
-            checkBox2.TabIndex = 3;
-            checkBox2.Text = "checkBox2";
-            checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(39, 126);
-            checkBox3.Name = "checkBox3";
-            checkBox3.Size = new Size(88, 19);
-            checkBox3.TabIndex = 4;
-            checkBox3.Text = "checkBox3";
-            checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox4
-            // 
-            checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(39, 151);
-            checkBox4.Name = "checkBox4";
-            checkBox4.Size = new Size(88, 19);
-            checkBox4.TabIndex = 5;
-            checkBox4.Text = "checkBox4";
-            checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // checkBox5
-            // 
-            checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(39, 176);
-            checkBox5.Name = "checkBox5";
-            checkBox5.Size = new Size(88, 19);
-            checkBox5.TabIndex = 6;
-            checkBox5.Text = "checkBox5";
-            checkBox5.UseVisualStyleBackColor = true;
-            // 
-            // checkBox6
-            // 
-            checkBox6.AutoSize = true;
-            checkBox6.Location = new Point(133, 76);
-            checkBox6.Name = "checkBox6";
-            checkBox6.Size = new Size(88, 19);
-            checkBox6.TabIndex = 7;
-            checkBox6.Text = "checkBox6";
-            checkBox6.UseVisualStyleBackColor = true;
-            // 
-            // checkBox7
-            // 
-            checkBox7.AutoSize = true;
-            checkBox7.Location = new Point(133, 101);
-            checkBox7.Name = "checkBox7";
-            checkBox7.Size = new Size(88, 19);
-            checkBox7.TabIndex = 8;
-            checkBox7.Text = "checkBox7";
-            checkBox7.UseVisualStyleBackColor = true;
-            // 
-            // checkBox8
-            // 
-            checkBox8.AutoSize = true;
-            checkBox8.Location = new Point(133, 126);
-            checkBox8.Name = "checkBox8";
-            checkBox8.Size = new Size(88, 19);
-            checkBox8.TabIndex = 9;
-            checkBox8.Text = "checkBox8";
-            checkBox8.UseVisualStyleBackColor = true;
-            // 
-            // checkBox9
-            // 
-            checkBox9.AutoSize = true;
-            checkBox9.Location = new Point(133, 151);
-            checkBox9.Name = "checkBox9";
-            checkBox9.Size = new Size(88, 19);
-            checkBox9.TabIndex = 10;
-            checkBox9.Text = "checkBox9";
-            checkBox9.UseVisualStyleBackColor = true;
-            // 
-            // checkBox10
-            // 
-            checkBox10.AutoSize = true;
-            checkBox10.Location = new Point(133, 176);
-            checkBox10.Name = "checkBox10";
-            checkBox10.Size = new Size(95, 19);
-            checkBox10.TabIndex = 11;
-            checkBox10.Text = "checkBox10";
-            checkBox10.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
@@ -400,6 +366,25 @@
             checkBox20.Text = "checkBox20";
             checkBox20.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            button1.Location = new Point(3, 123);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 6;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(33, 68);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 18;
+            button2.Text = "button2";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -412,7 +397,8 @@
             Load += Form1_Load;
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
-            tabPage1.PerformLayout();
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
             ResumeLayout(false);
@@ -430,16 +416,6 @@
         private ComboBox profCombo1;
         private ComboBox targCombo2;
         private ComboBox profCombo2;
-        private CheckBox checkBox1;
-        private CheckBox checkBox2;
-        private CheckBox checkBox3;
-        private CheckBox checkBox4;
-        private CheckBox checkBox5;
-        private CheckBox checkBox6;
-        private CheckBox checkBox7;
-        private CheckBox checkBox8;
-        private CheckBox checkBox9;
-        private CheckBox checkBox10;
         private CheckBox checkBox11;
         private CheckBox checkBox12;
         private CheckBox checkBox13;
@@ -450,5 +426,14 @@
         private CheckBox checkBox18;
         private CheckBox checkBox19;
         private CheckBox checkBox20;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private CheckBox checkBox1;
+        private CheckBox checkBox2;
+        private CheckBox checkBox3;
+        private Label label1;
+        private Label label2;
+        private Label label3;
+        private Button button2;
+        private Button button1;
     }
 }
