@@ -59,8 +59,8 @@ namespace Bootstrap
         };
 
         // Tab 1 variables
-        private string targetTab1 => targCombo1.SelectedItem?.ToString() ?? "No selection";
-        private string profileTab1 => profCombo1.SelectedItem?.ToString() ?? "No selection";
+        private string targetTab1 => comboTarg.SelectedItem?.ToString() ?? "No selection";
+        private string profileTab1 => comboProf.SelectedItem?.ToString() ?? "No selection";
         private string scriptPathTab1 => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "psapps.ps1");
 
         // Tab 2 variables
@@ -200,10 +200,23 @@ namespace Bootstrap
             stream.CopyTo(fileStream);
         }
 
+        private void button200_Click(object sender, EventArgs e)
+        {
+            flowLayoutEmail.Visible = !
+            flowLayoutEmail.Visible;
+            mainFlowPanel.PerformLayout();
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            flowLayoutPanel1.Visible = !
-            flowLayoutPanel1.Visible;
+            flowLayoutBrowsers.Visible = !
+            flowLayoutBrowsers.Visible;
+            mainFlowPanel.PerformLayout();
+        }
+
+        private void blueprintControl1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
