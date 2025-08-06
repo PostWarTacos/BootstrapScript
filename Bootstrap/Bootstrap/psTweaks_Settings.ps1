@@ -42,9 +42,20 @@ function Enable-NumlockBoot { # Enable NumLock on Boot  #~~# WORKS IN WIN11 #~~#
     Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "2"
 }
 
+function Disable-NumlockBoot { # Disable NumLock on Boot  #~~# WORKS IN WIN11 #~~#
+    Write-Host "Starting Disable-NumlockBoot" -ForegroundColor Yellow
+    Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "0"
+}
+
+
 function Disable-Teredo { # Disable Teredo Tunneling protocol  #~~# WORKS IN WIN11 #~~#
     Write-Host "Starting Disable-Teredo" -ForegroundColor Yellow
     netsh interface teredo set state disabled
+}
+
+function Enable-Teredo { # Enable Teredo Tunneling protocol  #~~# WORKS IN WIN11 #~~#
+    Write-Host "Starting Enable-Teredo" -ForegroundColor Yellow
+    netsh interface teredo set state enabled
 }
 
 function Show-FileExtensions { # Show File Extensions   #~~# WORKS IN WIN11 #~~#
