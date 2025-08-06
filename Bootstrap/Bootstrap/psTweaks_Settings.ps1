@@ -1,71 +1,3 @@
-<#Matt's Settings
-Turn on/off Recommendations in start menu    (Not working)
-Pointer size 3 or 4    (modify to depend on resolution)
-Green cursor
-Mouse response time tweaks
-Short Date (dd-MMM-yy)
-24-hour Short Time
-24-hour Long Time w/seconds
-Numlock on boot
-Show file extensions
-Add "End Task" to right click
-Set IPv4 as preferred
-Set certain services to manual
-Debloat Edge
-Remove bloatware
-Detailed BSoD
-Disable telemetry
-Disable MS lockscreen ads
-Disable Teredo tunneling protocol
-Disable hibernation
-Disable storage sense
-Disable consumer features    (Not working)
-Uninstall and Disable OneDrive
-Uninstall and Disable Copilot
-Uninstall and Disable Recall
-#>
-
-<# UI/UX & Usability
-Disable News and Interests / Widgets
-Remove Cortana (if present)
-Remove Meet Now from Taskbar
-Set Dark Mode (App and System separately)
-Enable Clipboard History
-
-
-Privacy & Security
-Enable Controlled Folder Access (Defender ransomware protection)
-Enable Windows Hello sign-in
-
-
-System/Performance
-Disable “Fast Startup”
-Disable Indexing on non-OS drives
-Trim SSDs via Optimize-Volume
-Set Paging File to manual
-Enable NTFS long paths
-Disable Delivery Optimization (Background Updates)
-
-
-Network
-Disable SMBv1
-Enable/Disable Network Discovery
-Flush DNS and set DNS
-Disable NetBIOS over TCP/IP
-Set metric priorities for interfaces
-
-
-Maintenance / Cleanup
-Clear Temp folders and Downloads older than X days
-Clean Windows Update Cache
-Disable “Suggested Apps” in Start
-Clear Prefetch and Recent File Lists
-#>
-
-<# IN DEV SETTING CHANGES
-PowerShell Profile
-#>
-
 function Set-PowerShellProfile { # Load PowerShell Profile
     Write-Output "Downloading PowerShell profile from GitHub."
 }
@@ -147,285 +79,60 @@ function Add-TaskbarEndTask { # Add "End Task" to Right-Click Menu   #~~# WORKS 
 
 function Set-ServicesManual { # Set Common Services to Manual
     Write-Host "Starting Set-ServicesManual" -ForegroundColor Yellow
-    $services = @("AJRouter", `
-        "ALG", `
-        "AppIDSvc", `
-        "Appinfo", `
-        "AppMgmt", `
-        "AppReadiness", `
-        "AppVClient", `
-        "AppXSvc", `
-        "AssignedAccessManagerSvc", `
-        "AudioEndpointBuilder", `
-        "AudioSrv", `
-        "autotimesvc", `
-        "AxInstSV", `
-        "BcastDVRUserService_*", `
-        "BDESVC", `
-        "BFE", `
-        "BITS", `
-        "BluetoothUserService_*", `
-        "BrokerInfrastructure", `
-        "Browser", `
-        "BTAGService", `
-        "BthAvctpSvc", `
-        "BthHFSrv", `
-        "bthserv", `
-        "camsvc", `
-        "CaptureService_*", `
-        "cbdhsvc_*", `
-        "CDPSvc", `
-        "CDPUserSvc_*", `
-        "CertPropSvc", `
-        "ClipSVC", `
-        "cloudidsvc", `
-        "COMSysApp", `
-        "ConsentUxUserSvc_*", `
-        "CoreMessagingRegistrar", `
-        "CredentialEnrollmentManagerUserSvc_*", `
-        "CryptSvc", `
-        "CscService", `
-        "DcomLaunch", `
-        "DcpSvc", `
-        "dcsvc", `
-        "defragsvc", `
-        "DeviceAssociationBrokerSvc_*", `
-        "DeviceAssociationService", `
-        "DeviceInstall", `
-        "DevicePickerUserSvc_*", `
-        "DevicesFlowUserSvc_*", `
-        "DevQueryBroker", `
-        "Dhcp", `
-        "diagnosticshub.standardcollector.service", `
-        "diagsvc", `
-        "DiagTrack", `
-        "DialogBlockingService", `
-        "DispBrokerDesktopSvc", `
-        "DisplayEnhancementService", `
-        "DmEnrollmentSvc", `
-        "dmwappushservice", `
-        "Dnscache", `
-        "DoSvc", `
-        "dot3svc", `
-        "DPS", `
-        "DsmSvc", `
-        "DsSvc", `
-        "DusmSvc", `
-        "EapHost", `
-        "edgeupdate", `
-        "edgeupdatem", `
-        "EFS", `
-        "embeddedmode", `
-        "EntAppSvc", `
-        "EventLog", `
-        "EventSystem", `
-        "Fax", `
-        "fdPHost", `
-        "FDResPub", `
-        "fhsvc", `
-        "FontCache", `
-        "FrameServer", `
-        "FrameServerMonitor", `
-        "gpsvc", `
-        "GraphicsPerfSvc", `
-        "hidserv", `
-        "HomeGroupListener", `
-        "HomeGroupProvider", `
-        "HvHost", `
-        "icssvc", `
-        "IEEtwCollectorService", `
-        "IKEEXT", `
-        "InstallService", `
-        "InventorySvc", `
-        "iphlpsvc", `
-        "IpxlatCfgSvc", `
-        "KeyIso", `
-        "KtmRm", `
-        "LanmanServer", `
-        "LanmanWorkstation", `
-        "lfsvc", `
-        "LicenseManager", `
-        "lltdsvc", `
-        "lmhosts", `
-        "LSM", `
-        "LxpSvc", `
-        "MapsBroker", `
-        "McpManagementService", `
-        "MessagingService_*", `
-        "MicrosoftEdgeElevationService", `
-        "MixedRealityOpenXRSvc", `
-        "MpsSvc", `
-        "MSDTC", `
-        "MSiSCSI", `
-        "msiserver", `
-        "MsKeyboardFilter", `
-        "NaturalAuthentication", `
-        "NcaSvc", `
-        "NcbService", `
-        "NcdAutoSetup", `
-        "Netlogon", `
-        "Netman", `
-        "netprofm", `
-        "NetSetupSvc", `
-        "NetTcpPortSharing", `
-        "NgcCtnrSvc", `
-        "NgcSvc", `
-        "NlaSvc", `
-        "NPSMSvc_*", `
-        "nsi", `
-        "OneSyncSvc_*", `
-        "p2pimsvc", `
-        "p2psvc", `
-        "P9RdrService_*", `
-        "PcaSvc", `
-        "PeerDistSvc", `
-        "PenService_*", `
-        "perceptionsimulation", `
-        "PerfHost", `
-        "PhoneSvc", `
-        "PimIndexMaintenanceSvc_*", `
-        "pla", `
-        "PlugPlay", `
-        "PNRPAutoReg", `
-        "PNRPsvc", `
-        "PolicyAgent", `
-        "Power", `
-        "PrintNotify", `
-        "PrintWorkflowUserSvc_*", `
-        "ProfSvc", `
-        "PushToInstall", `
-        "QWAVE", `
-        "RasAuto", `
-        "RasMan", `
-        "RemoteAccess", `
-        "RemoteRegistry", `
-        "RetailDemo", `
-        "RmSvc", `
-        "RpcEptMapper", `
-        "RpcLocator", `
-        "RpcSs", `
-        "SamSs", `
-        "SCardSvr", `
-        "ScDeviceEnum", `
-        "Schedule", `
-        "SCPolicySvc", `
-        "SDRSVC", `
-        "seclogon", `
-        "SecurityHealthService", `
-        "SEMgrSvc", `
-        "SENS", `
-        "Sense", `
-        "SensorDataService", `
-        "SensorService", `
-        "SensrSvc", `
-        "SessionEnv", `
-        "SgrmBroker", `
-        "SharedAccess", `
-        "SharedRealitySvc", `
-        "ShellHWDetection", `
-        "shpamsvc", `
-        "smphost", `
-        "SmsRouter", `
-        "SNMPTRAP", `
-        "spectrum", `
-        "Spooler", `
-        "sppsvc", `
-        "SSDPSRV", `
-        "ssh-agent", `
-        "SstpSvc", `
-        "StateRepository", `
-        "StiSvc", `
-        "StorSvc", `
-        "svsvc", `
-        "swprv", `
-        "SysMain", `
-        "SystemEventsBroker", `
-        "TabletInputService", `
-        "TapiSrv", `
-        "TermService", `
-        "TextInputManagementService", `
-        "Themes", `
-        "TieringEngineService", `
-        "tiledatamodelsvc", `
-        "TimeBroker", `
-        "TimeBrokerSvc", `
-        "TokenBroker", `
-        "TrkWks", `
-        "TroubleshootingSvc", `
-        "TrustedInstaller", `
-        "tzautoupdate", `
-        "UdkUserSvc_*", `
-        "UevAgentService", `
-        "uhssvc", `
-        "UI0Detect", `
-        "UmRdpService", `
-        "UnistoreSvc_*", `
-        "upnphost", `
-        "UserDataSvc_*", `
-        "UserManager", `
-        "UsoSvc", `
-        "VacSvc", `
-        "VaultSvc", `
-        "vds", `
-        "VGAuthService", `
-        "vm3dservice", `
-        "vmicguestinterface", `
-        "vmicheartbeat", `
-        "vmickvpexchange", `
-        "vmicrdv", `
-        "vmicshutdown", `
-        "vmictimesync", `
-        "vmicvmsession", `
-        "vmicvss", `
-        "VMTools", `
-        "vmvss", `
-        "VSS", `
-        "W32Time", `
-        "WaaSMedicSvc", `
-        "WalletService", `
-        "WarpJITSvc", `
-        "wbengine", `
-        "WbioSrvc", `
-        "Wcmsvc", `
-        "wcncsvc", `
-        "WcsPlugInService", `
-        "WdiServiceHost", `
-        "WdiSystemHost", `
-        "WdNisSvc", `
-        "WebClient", `
-        "webthreatdefsvc", `
-        "webthreatdefusersvc_*", `
-        "Wecsvc", `
-        "WEPHOSTSVC", `
-        "wercplsupport", `
-        "WerSvc", `
-        "WFDSConMgrSvc", `
-        "WiaRpc", `
-        "WinDefend", `
-        "WinHttpAutoProxySvc", `
-        "Winmgmt", `
-        "WinRM", `
-        "wisvc", `
-        "WlanSvc", `
-        "wlidsvc", `
-        "wlpasvc", `
-        "WManSvc", `
-        "wmiApSrv", `
-        "WMPNetworkSvc", `
-        "workfolderssvc", `
-        "WpcMonSvc", `
-        "WPDBusEnum", `
-        "WpnService", `
-        "WpnUserService_*", `
-        "wscsvc", `
-        "WSearch", `
-        "WSService", `
-        "wuauserv", `
-        "wudfsvc", `
-        "XblAuthManager", `
-        "XblGameSave", `
-        "XboxGipSvc", `
-        "XboxNetApiSvc")
+    $services = @("AJRouter", "ALG", "AppIDSvc", "Appinfo", "AppMgmt", `
+        "AppReadiness", "AppVClient", "AppXSvc", "AssignedAccessManagerSvc", `
+        "AudioEndpointBuilder", "AudioSrv", "autotimesvc", "AxInstSV", `
+        "BcastDVRUserService_*", "BDESVC", "BFE", "BITS", "BluetoothUserService_*", `
+        "BrokerInfrastructure", "Browser", "BTAGService","BthAvctpSvc", `
+        "BthHFSrv", "bthserv", "camsvc", "CaptureService_*", "cbdhsvc_*", `
+        "CDPSvc", "CDPUserSvc_*", "CertPropSvc", "ClipSVC", "cloudidsvc", `
+        "COMSysApp", "ConsentUxUserSvc_*", "CoreMessagingRegistrar", `
+        "CredentialEnrollmentManagerUserSvc_*", "CryptSvc", "CscService", `
+        "DcomLaunch", "DcpSvc", "dcsvc", "defragsvc", "DeviceAssociationBrokerSvc_*", `
+        "DeviceAssociationService", "DeviceInstall", "DevicePickerUserSvc_*", `
+        "DevicesFlowUserSvc_*", "DevQueryBroker", "Dhcp", "diagnosticshub.standardcollector.service", `
+        "diagsvc", "DiagTrack", "DialogBlockingService", "DispBrokerDesktopSvc", `
+        "DisplayEnhancementService", "DmEnrollmentSvc", "dmwappushservice", "Dnscache", `
+        "DoSvc", "dot3svc", "DPS", "DsmSvc", "DsSvc", "DusmSvc", "EapHost", "edgeupdate", `
+        "edgeupdatem", "EFS", "embeddedmode", "EntAppSvc", "EventLog", "EventSystem", `
+        "Fax", "fdPHost", "FDResPub", "fhsvc", "FontCache", "FrameServer", `
+        "FrameServerMonitor", "gpsvc", "GraphicsPerfSvc", "hidserv", "HomeGroupListener", `
+        "HomeGroupProvider", "HvHost", "icssvc", "IEEtwCollectorService", "IKEEXT", `
+        "InstallService", "InventorySvc", "iphlpsvc", "IpxlatCfgSvc", "KeyIso", `
+        "KtmRm", "LanmanServer", "LanmanWorkstation", "lfsvc", "LicenseManager", `
+        "lltdsvc", "lmhosts", "LSM", "LxpSvc", "MapsBroker", "McpManagementService", `
+        "MessagingService_*", "MicrosoftEdgeElevationService", "MixedRealityOpenXRSvc", `
+        "MpsSvc", "MSDTC", "MSiSCSI", "msiserver", "MsKeyboardFilter", "NaturalAuthentication", `
+        "NcaSvc", "NcbService", "NcdAutoSetup", "Netlogon", "Netman", "netprofm", "NetSetupSvc", `
+        "NetTcpPortSharing", "NgcCtnrSvc", "NgcSvc", "NlaSvc", "NPSMSvc_*", "nsi", "OneSyncSvc_*", `
+        "p2pimsvc", "p2psvc", "P9RdrService_*", "PcaSvc", "PeerDistSvc", "PenService_*", `
+        "perceptionsimulation", "PerfHost", "PhoneSvc", "PimIndexMaintenanceSvc_*", "pla", `
+        "PlugPlay", "PNRPAutoReg", "PNRPsvc", "PolicyAgent", "Power", "PrintNotify", `
+        "PrintWorkflowUserSvc_*", "ProfSvc", "PushToInstall", "QWAVE", "RasAuto", `
+        "RasMan", "RemoteAccess", "RemoteRegistry", "RetailDemo", "RmSvc", "RpcEptMapper", `
+        "RpcLocator", "RpcSs", "SamSs", "SCardSvr", "ScDeviceEnum", "Schedule", `
+        "SCPolicySvc", "SDRSVC", "seclogon", "SecurityHealthService", "SEMgrSvc", `
+        "SENS", "Sense", "SensorDataService", "SensorService", "SensrSvc", "SessionEnv", `
+        "SgrmBroker", "SharedAccess", "SharedRealitySvc", "ShellHWDetection", "shpamsvc", `
+        "smphost", "SmsRouter", "SNMPTRAP", "spectrum", "Spooler", "sppsvc", "SSDPSRV", `
+        "ssh-agent", "SstpSvc", "StateRepository", "StiSvc", "StorSvc", "svsvc", `
+        "swprv", "SysMain", "SystemEventsBroker", "TabletInputService", "TapiSrv", "TermService", `
+        "TextInputManagementService", "Themes", "TieringEngineService", "tiledatamodelsvc", `
+        "TimeBroker", "TimeBrokerSvc", "TokenBroker", "TrkWks", "TroubleshootingSvc", 
+        "TrustedInstaller", "tzautoupdate", "UdkUserSvc_*", "UevAgentService", "uhssvc", `
+        "UI0Detect", "UmRdpService", "UnistoreSvc_*", "upnphost", "UserDataSvc_*", `
+        "UserManager", "UsoSvc", "VacSvc", "VaultSvc", "vds", "VGAuthService", "vm3dservice", `
+        "vmicguestinterface", "vmicheartbeat", "vmickvpexchange", "vmicrdv", `
+        "vmicshutdown", "vmictimesync", "vmicvmsession", "vmicvss", "VMTools", `
+        "vmvss", "VSS", "W32Time", "WaaSMedicSvc", "WalletService", "WarpJITSvc", `
+        "wbengine", "WbioSrvc", "Wcmsvc", "wcncsvc", "WcsPlugInService", "WdiServiceHost", `
+        "WdiSystemHost", "WdNisSvc", "WebClient", "webthreatdefsvc", "webthreatdefusersvc_*", `
+        "Wecsvc", "WEPHOSTSVC", "wercplsupport", "WerSvc", "WFDSConMgrSvc", "WiaRpc", `
+        "WinDefend", "WinHttpAutoProxySvc", "Winmgmt", "WinRM", "wisvc", "WlanSvc", `
+        "wlidsvc", "wlpasvc", "WManSvc", "wmiApSrv", "WMPNetworkSvc", "workfolderssvc", `
+        "WpcMonSvc", "WPDBusEnum", "WpnService", "WpnUserService_*", "wscsvc", `
+        "WSearch", "WSService", "wuauserv", "wudfsvc", "XblAuthManager", "XblGameSave", `
+        "XboxGipSvc", "XboxNetApiSvc")
     foreach ( $service in $services ) {
         Set-Service -Name $service -StartupType Manual -ErrorAction SilentlyContinue
     }
