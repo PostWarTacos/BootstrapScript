@@ -1,2 +1,7 @@
 .vs/slnx.sqlite
 *.vsidx
+.vs/BootstrapScript/v17/.suo
+.vs/BootstrapScript/v17/DocumentLayout.backup.json
+Bootstrap/Bootstrap/obj/Debug/net8.0-windows/Bootstrap.AssemblyInfo.cs
+Bootstrap/Bootstrap/obj/Debug/net8.0-windows/Bootstrap.AssemblyInfoInputs.cache
+.gitignore
