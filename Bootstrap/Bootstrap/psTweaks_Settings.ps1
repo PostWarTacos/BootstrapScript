@@ -3,7 +3,7 @@ function Set-PowerShellProfile { # Load PowerShell Profile
 }
 
 # Function to open Mouse Pointer Settings UI and set the color & size
-function Set-MousePointer {   #~~# WORKS IN WIN11 #~~#
+function Set-MousePointer {   
     Write-Host "Starting Set-MousePointer" -ForegroundColor Yellow
     Start-Process "ms-settings:easeofaccess-mousepointer"  # Open Ease of Access Mouse Settings
     Start-Sleep -Seconds 2  # Wait for settings window to open
@@ -25,7 +25,7 @@ function Set-MousePointer {   #~~# WORKS IN WIN11 #~~#
     [System.Windows.Forms.SendKeys]::SendWait("%{F4}")  # Alt+F4 to close
 }
 
-function Set-MilDateTimeFormat{ # Mil Date and Time Format  #~~# WORKS IN WIN11 #~~#
+function Set-MilDateTimeFormat{ # Mil Date and Time Format  #~~# Upgrade to comboboxes. One for date, one for time.
     Write-Host "Starting Set-MilDateTimeFormat" -ForegroundColor Yellow
     # Set Short Date Format
     Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sShortDate" -Value "dd-MMM-yy"
@@ -37,43 +37,43 @@ function Set-MilDateTimeFormat{ # Mil Date and Time Format  #~~# WORKS IN WIN11 
     Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sLongTime" -Value "HH:mm:ss"
 }
 
-function Enable-NumlockBoot { # Enable NumLock on Boot  #~~# WORKS IN WIN11 #~~#
+function Enable-NumlockBoot { # Enable NumLock on Boot  
     Write-Host "Starting Enable-NumlockBoot" -ForegroundColor Yellow
     Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "2"
 }
 
-function Disable-NumlockBoot { # Disable NumLock on Boot  #~~# WORKS IN WIN11 #~~#
+function Disable-NumlockBoot { # Disable NumLock on Boot  
     Write-Host "Starting Disable-NumlockBoot" -ForegroundColor Yellow
     Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name "InitialKeyboardIndicators" -Value "0"
 }
 
 
-function Disable-Teredo { # Disable Teredo Tunneling protocol  #~~# WORKS IN WIN11 #~~#
+function Disable-Teredo { # Disable Teredo Tunneling protocol  
     Write-Host "Starting Disable-Teredo" -ForegroundColor Yellow
     netsh interface teredo set state disabled
 }
 
-function Enable-Teredo { # Enable Teredo Tunneling protocol  #~~# WORKS IN WIN11 #~~#
+function Enable-Teredo { # Enable Teredo Tunneling protocol  
     Write-Host "Starting Enable-Teredo" -ForegroundColor Yellow
     netsh interface teredo set state enabled
 }
 
-function Show-FileExtensions { # Show File Extensions   #~~# WORKS IN WIN11 #~~#
+function Show-FileExtensions { # Show File Extensions   
     Write-Host "Starting Show-FileExtensions" -ForegroundColor Yellow
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value 0
 }
 
-function Disable-Hibernation { # Disable Hibernation  #~~# WORKS IN WIN11 #~~#
+function Disable-Hibernation { # Disable Hibernation  
     Write-Host "Starting Disable-Hibernation" -ForegroundColor Yellow
     powercfg.exe /hibernate off
 }
 
-function Disable-StorageSense { # Disable Storage Sense  #~~# WORKS IN WIN11 #~~#
+function Disable-StorageSense { # Disable Storage Sense  
     Write-Host "Starting Disable-StorageSense" -ForegroundColor Yellow
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" -Name "01" -Value 0 -Type Dword -Force
 }
 
-function Add-TaskbarEndTask { # Add "End Task" to Right-Click Menu   #~~# WORKS IN WIN11 #~~#
+function Add-TaskbarEndTask { # Add "End Task" to Right-Click Menu   
     Write-Host "Starting Add-TaskbarEndTask" -ForegroundColor Yellow
     $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings"
     $name = "TaskbarEndTask"
@@ -222,7 +222,7 @@ function Disable-Autoruns { # Disable autoruns for common apps
 
 }
 
-function Set-DebloatEdge { # Debloat Edge   #~~# WORKS IN WIN11 #~~#
+function Set-DebloatEdge { # Debloat Edge   
     Write-Host "Starting Debloat-Edge" -ForegroundColor Yellow
     $regChanges = @(
         @{Path="HKLM:\SOFTWARE\Policies\Microsoft\EdgeUpdate"; Name="CreateDesktopShortcutDefault"; Type="DWord"; Value=0}
@@ -253,17 +253,17 @@ function Set-DebloatEdge { # Debloat Edge   #~~# WORKS IN WIN11 #~~#
     }
 }
 
-function Enable-DetailedBSoD { # Enable Detailed BSoD  #~~# WORKS IN WIN11 #~~#
+function Enable-DetailedBSoD { # Enable Detailed BSoD  
     Write-Host "Starting Enable-DetailedBSoD" -ForegroundColor Yellow
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "DisplayParameters" -Value 1 -Force
 }
 
-function Set-PreferIPv4 { # Set IPv4 as preferred over IPv6   #~~# WORKS IN WIN11 #~~#
+function Set-PreferIPv4 { # Set IPv4 as preferred over IPv6   
     Write-Host "Starting Set-PreferIPv4" -ForegroundColor Yellow
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name "DisabledComponents" -Value 32 -Type DWord
 }
 
-function Uninstall-OneDrive{ # Remove OneDrive and disable it's ability to reinstall    #~~# WORKS IN WIN11 #~~#
+function Uninstall-OneDrive{ # Remove OneDrive and disable it's ability to reinstall    
     Write-Host "Starting Uninstall-OneDrive" -ForegroundColor Yellow
     $OneDrivePath = $($env:OneDrive)
     Write-Host "Removing OneDrive"
@@ -362,7 +362,7 @@ function Uninstall-OneDrive{ # Remove OneDrive and disable it's ability to reins
     }
 }
 
-function Uninstall-Copilot{ # Remove Copilot and disable it's ability to reinstall  #~~# WORKS IN WIN11 #~~#
+function Uninstall-Copilot{ # Remove Copilot and disable it's ability to reinstall  
     Write-Host "Starting Uninstall-Copilot" -ForegroundColor Yellow
     try {
         # Remove the Copilot package for the current user (or all users if applicable)
@@ -600,8 +600,63 @@ function Enable-LegacyBoot{ # Enable legacy boot menu, such as F8 at boot
     bcdedit /set `{current`} bootmenupolicy Legacy | Out-Null
 }
 
-#
-# NOT WORKING IN WIN11
+function Disable-NewsAndWidgets { # Disable News and Interests / Widgets
+    Write-Host "Disabling News and Interests / Widgets" -ForegroundColor Yellow
+    # Windows 10: News and Interests
+    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    Set-ItemProperty -Path $regPath -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2 -Force
+
+    # Windows 11: Widgets
+    $widgetsPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Widgets"
+    if (-not (Test-Path $widgetsPath)) { New-Item -Path $widgetsPath -Force | Out-Null }
+    Set-ItemProperty -Path $widgetsPath -Name "AllowWidgets" -Type DWord -Value 0 -Force
+}
+
+function Remove-Cortana { # Remove Cortana
+    Write-Host "Removing Cortana (if present)" -ForegroundColor Yellow
+    Get-AppxPackage -Name "Microsoft.549981C3F5F10" -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue
+    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -Like "Microsoft.549981C3F5F10" | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+    # Disable Cortana via registry
+    $cortanaReg = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
+    if (-not (Test-Path $cortanaReg)) { New-Item -Path $cortanaReg -Force | Out-Null }
+    Set-ItemProperty -Path $cortanaReg -Name "AllowCortana" -Type DWord -Value 0 -Force
+}
+
+function Remove-MeetNow { # Remove Meet Now from Taskbar
+    Write-Host "Removing Meet Now from Taskbar" -ForegroundColor Yellow
+    $meetNowReg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    if (-not (Test-Path $meetNowReg)) { New-Item -Path $meetNowReg -Force | Out-Null }
+    Set-ItemProperty -Path $meetNowReg -Name "HideSCAMeetNow" -Type DWord -Value 1 -Force
+    # Try to kill Meet Now process if running
+    Stop-Process -Name "MeetNow" -ErrorAction SilentlyContinue
+}
+
+function Set-DarkMode { # Set Dark Mode
+    param(
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("App","System","Both")]
+        [string]$Mode = "Both"
+    )
+    Write-Host "Setting Dark Mode ($Mode)" -ForegroundColor Yellow
+    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    if ($Mode -eq "App" -or $Mode -eq "Both") {
+        Set-ItemProperty -Path $regPath -Name "AppsUseLightTheme" -Type DWord -Value 0 -Force
+    }
+    if ($Mode -eq "System" -or $Mode -eq "Both") {
+        Set-ItemProperty -Path $regPath -Name "SystemUsesLightTheme" -Type DWord -Value 0 -Force
+    }
+}
+
+function Enable-ClipboardHistory { # Enable Clipboard History
+    Write-Host "Enabling Clipboard History" -ForegroundColor Yellow
+    $regPath = "HKCU:\Software\Microsoft\Clipboard"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    Set-ItemProperty -Path $regPath -Name "EnableClipboardHistory" -Type DWord -Value 1 -Force
+    # Try to start clipboard history (Win+V)
+    Write-Host "Press Win+V to use Clipboard History."
+}
 #
 
 <# NOT WORKING IN WIN11
