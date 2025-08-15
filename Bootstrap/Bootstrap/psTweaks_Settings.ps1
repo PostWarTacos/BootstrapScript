@@ -26,6 +26,17 @@ function Set-MousePointer {
     [System.Windows.Forms.SendKeys]::SendWait("%{F4}")  # Alt+F4 to close
 }
 
+#-------------------- One Time Cleanup Actions --------------------#
+function Optimize-SSDs {
+    Write-Host "Trimming all SSDs..." -ForegroundColor Yellow
+    Get-PhysicalDisk | Where-Object MediaType -eq "SSD" | ForEach-Object {
+        $vols = Get-Volume -PhysicalDisk $_
+        foreach ($vol in $vols) {
+            Optimize-Volume -DriveLetter $vol.DriveLetter -ReTrim -Verbose
+        }
+    }
+}
+
 #-------------------- One Way Changes --------------------#
 function Set-ServicesManual { # Set Common Services to Manual
     Write-Host "Starting Set-ServicesManual" -ForegroundColor Yellow
@@ -341,6 +352,42 @@ function Set-MilDateTimeFormat{ # Mil Date and Time Format  #~~# Upgrade to comb
     
     # Set Long Time Format - 24 clock with seconds    
     Set-ItemProperty -Path "HKCU:\Control Panel\International" -Name "sLongTime" -Value "HH:mm:ss"
+}
+
+function Set-ThumbnailCacheOnNetworkFolders {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Thumbnail Cache on Network Folders" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 0 } else { 1 }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "DisableThumbsDBOnNetworkFolders" -Type DWord -Value $value -Force
+}
+
+function Set-OpenThisPC {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Open This PC instead of Quick Access" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Value $value
+}
+
+function Set-IndexingNonOSDrives {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Indexing on non-OS drives" -ForegroundColor Yellow
+    $drives = Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter -ne $env:SystemDrive[0] }
+    foreach ($drive in $drives) {
+        $attrib = if ($Action -eq "Enable") { "-I" } else { "+I" }
+        cmd.exe /c "attrib $attrib $($drive.DriveLetter):\*.* /S /D"
+    }
 }
 
 function Set-NumlockBoot {
@@ -978,6 +1025,96 @@ function Set-ControlledFolderAccess {
     }
 }
 
+function Set-FastStartup {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Fast Startup" -ForegroundColor Yellow
+    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power"
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "HiberbootEnabled" -Value $value -Type DWord -Force
+}
+
+function Set-SysMain { # Useful to disable on older hardware. 
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action SysMain (Superfetch)" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { "Automatic" } else { "Disabled" }
+    Set-Service -Name "SysMain" -StartupType $value -ErrorAction SilentlyContinue
+    if ($Action -eq "Disable") { Stop-Service -Name "SysMain" -Force -ErrorAction SilentlyContinue }
+    if ($Action -eq "Enable") { Start-Service -Name "SysMain" -ErrorAction SilentlyContinue }
+}
+
+function Set-PagingFileManual {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Paging File Manual" -ForegroundColor Yellow
+    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
+    if ($Action -eq "Enable") {
+        # Set to manual (user must set size via System Properties)
+        Set-ItemProperty -Path $regPath -Name "PagingFiles" -Value "C:\pagefile.sys 2048 4096"
+        Set-ItemProperty -Path $regPath -Name "SystemManagedSize" -Value 0 -Type DWord
+    } elseif ($Action -eq "Disable") {
+        # Set to system managed
+        Set-ItemProperty -Path $regPath -Name "PagingFiles" -Value "C:\pagefile.sys"
+        Set-ItemProperty -Path $regPath -Name "SystemManagedSize" -Value 1 -Type DWord
+    }
+}
+
+function Set-NTFSLongPaths {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action NTFS Long Paths" -ForegroundColor Yellow
+    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem"
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "LongPathsEnabled" -Value $value -Type DWord -Force
+}
+
+function Set-DeliveryOptimization {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Delivery Optimization" -ForegroundColor Yellow
+    $regPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "DODownloadMode" -Value $value -Type DWord -Force
+}
+
+function Set-ShowHiddenFiles {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Show Hidden Files and Folders" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 1 } else { 2 }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value $value
+}
+
+function Set-ShowFullPathInTitleBar {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Show Full Path in Title Bar" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" -Name "FullPath" -Value $value
+}
 
 <# NOT WORKING IN WIN11
 function Disable-ConsumerFeatures { # Disable Consumer Features
