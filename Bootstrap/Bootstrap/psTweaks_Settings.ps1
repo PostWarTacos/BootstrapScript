@@ -108,7 +108,6 @@ function Clear-Downloads {
     Write-Host "Downloads cleaned."
 }
 
-
 #-------------------- One Way Changes --------------------#
 function Set-ServicesManual { # Set Common Services to Manual
     Write-Host "Starting Set-ServicesManual" -ForegroundColor Yellow
