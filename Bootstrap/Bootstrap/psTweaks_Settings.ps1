@@ -37,6 +37,78 @@ function Optimize-SSDs {
     }
 }
 
+function Clear-WindowsUpdateCache {
+    Write-Host "Cleaning Windows Update Cache..." -ForegroundColor Yellow
+    # Stop Windows Update service
+    Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
+    $updateCache = "$env:SystemRoot\SoftwareDistribution\Download"
+    if (Test-Path $updateCache) {
+        Get-ChildItem -Path $updateCache -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+    }
+    # Start Windows Update service
+    Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+    Write-Host "Windows Update Cache cleaned."
+}
+
+function Clear-PrefetchFiles {
+    Write-Host "Clearing Prefetch files..." -ForegroundColor Yellow
+    $prefetch = "$env:SystemRoot\Prefetch"
+    if (Test-Path $prefetch) {
+        Get-ChildItem -Path $prefetch -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+    Write-Host "Prefetch files cleared."
+}
+
+function Clear-RecentFiles {
+    Write-Host "Clearing Recent File List..." -ForegroundColor Yellow
+    $recent = "$env:APPDATA\Microsoft\Windows\Recent"
+    if (Test-Path $recent) {
+        Get-ChildItem -Path $recent -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+    Write-Host "Recent File List cleared."
+}
+
+function Clear-TempFiles {
+    param(
+        [Parameter(Mandatory=$false)]
+        [int]$Days = 30
+    )
+    Write-Host "Clearing Temp folders older than $Days days..." -ForegroundColor Yellow
+
+    $tempPaths = @(
+        "$env:TEMP",
+        "$env:LOCALAPPDATA\Temp",
+        "$env:windir\Temp"
+    )
+    foreach ($path in $tempPaths) {
+        if (Test-Path $path) {
+            Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue |
+                Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
+                Remove-Item -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    Write-Host "Temp folders cleaned."
+}
+
+function Clear-Downloads {
+    param(
+        [Parameter(Mandatory=$false)]
+        [int]$Days = 30
+    )
+    Write-Host "Clearing Downloads older than $Days days..." -ForegroundColor Yellow
+
+    $downloads = "$env:USERPROFILE\Downloads"
+    if (Test-Path $downloads) {
+        Get-ChildItem -Path $downloads -Recurse -Force -ErrorAction SilentlyContinue |
+            Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
+            Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+
+    Write-Host "Downloads cleaned."
+}
+
+
 #-------------------- One Way Changes --------------------#
 function Set-ServicesManual { # Set Common Services to Manual
     Write-Host "Starting Set-ServicesManual" -ForegroundColor Yellow
@@ -1231,75 +1303,21 @@ function Set-CtrlAltDelRequirement {
     # Note: DisableCAD=0 means require Ctrl+Alt+Del, DisableCAD=1 means do not require
 }
 
-function Clear-TempAndDownloads {
+function Set-SuggestedAppsInStart {
     param(
-        [Parameter(Mandatory=$false)]
-        [int]$Days = 30
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
     )
-    Write-Host "Clearing Temp folders and Downloads older than $Days days..." -ForegroundColor Yellow
-
-    $tempPaths = @(
-        "$env:TEMP",
-        "$env:LOCALAPPDATA\Temp",
-        "$env:windir\Temp"
-    )
-    foreach ($path in $tempPaths) {
-        if (Test-Path $path) {
-            Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue | 
-                Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
-                Remove-Item -Force -ErrorAction SilentlyContinue
-        }
-    }
-
-    $downloads = "$env:USERPROFILE\Downloads"
-    if (Test-Path $downloads) {
-        Get-ChildItem -Path $downloads -Recurse -Force -ErrorAction SilentlyContinue |
-            Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
-            Remove-Item -Force -ErrorAction SilentlyContinue
-    }
-
-    Write-Host "Temp folders and Downloads cleaned."
-}
-
-function Clean-WindowsUpdateCache {
-    Write-Host "Cleaning Windows Update Cache..." -ForegroundColor Yellow
-    # Stop Windows Update service
-    Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
-    $updateCache = "$env:SystemRoot\SoftwareDistribution\Download"
-    if (Test-Path $updateCache) {
-        Get-ChildItem -Path $updateCache -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
-    }
-    # Start Windows Update service
-    Start-Service -Name wuauserv -ErrorAction SilentlyContinue
-    Write-Host "Windows Update Cache cleaned."
-}
-
-function Disable-SuggestedAppsInStart {
-    Write-Host "Disabling 'Suggested Apps' in Start Menu..." -ForegroundColor Yellow
+    Write-Host "$Action 'Suggested Apps' in Start Menu..." -ForegroundColor Yellow
     $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
     if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
-    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338388Enabled" -Value 0 -Force
-    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338389Enabled" -Value 0 -Force
-    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338393Enabled" -Value 0 -Force
-    Write-Host "'Suggested Apps' in Start Menu disabled."
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338388Enabled" -Value $value -Force
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338389Enabled" -Value $value -Force
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338393Enabled" -Value $value -Force
+    Write-Host "'Suggested Apps' in Start Menu set to $Action."
 }
-
-function Clear-PrefetchAndRecentFiles {
-    Write-Host "Clearing Prefetch and Recent File Lists..." -ForegroundColor Yellow
-    # Clear Prefetch
-    $prefetch = "$env:SystemRoot\Prefetch"
-    if (Test-Path $prefetch) {
-        Get-ChildItem -Path $prefetch -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
-    }
-    # Clear Recent Files
-    $recent = "$env:APPDATA\Microsoft\Windows\Recent"
-    if (Test-Path $recent) {
-        Get-ChildItem -Path $recent -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
-    }
-    Write-Host "Prefetch and Recent File Lists cleared."
-}
-
-#
 
 <# NOT WORKING IN WIN11
 function Disable-ConsumerFeatures { # Disable Consumer Features
