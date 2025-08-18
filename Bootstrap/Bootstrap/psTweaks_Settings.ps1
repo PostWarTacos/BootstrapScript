@@ -211,6 +211,15 @@ Function Remove-CommonBloatware { # Remove Windows bloatware apps
     Write-Output "Bloatware Removal Complete!"
 }
 
+function Disable-SMBv1 {
+    Write-Host "Disabling SMBv1..." -ForegroundColor Yellow
+    # Disable SMBv1 protocol via Windows Features and registry
+    Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -ErrorAction SilentlyContinue
+    Disable-WindowsOptionalFeature -Online -FeatureName "SMB1Protocol" -NoRestart -ErrorAction SilentlyContinue
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "SMB1" -Value 0 -Type DWord -Force
+    Write-Host "SMBv1 has been disabled."
+}
+
 #-------------------- AI Related Changes --------------------#
 function Set-Cortana {
     param(
@@ -1080,7 +1089,7 @@ function Set-NTFSLongPaths {
     $value = if ($Action -eq "Enable") { 1 } else { 0 }
     Set-ItemProperty -Path $regPath -Name "LongPathsEnabled" -Value $value -Type DWord -Force
 }
-
+ 
 function Set-DeliveryOptimization {
     param(
         [Parameter(Mandatory=$true)]
@@ -1115,6 +1124,182 @@ function Set-ShowFullPathInTitleBar {
     $value = if ($Action -eq "Enable") { 1 } else { 0 }
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" -Name "FullPath" -Value $value
 }
+
+function Set-NetworkDiscovery {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Network Discovery" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    # Enable/Disable Network Discovery for all profiles
+    Set-NetFirewallRule -DisplayGroup "Network Discovery" -Enabled:($Action -eq "Enable") -Profile Any -ErrorAction SilentlyContinue
+    Set-Service -Name "fdPHost","FDResPub","upnphost","SSDPSRV" -StartupType:($(if ($Action -eq "Enable") {"Automatic"} else {"Manual"})) -ErrorAction SilentlyContinue
+    if ($Action -eq "Enable") {
+        Start-Service -Name "fdPHost","FDResPub","upnphost","SSDPSRV" -ErrorAction SilentlyContinue
+    } else {
+        Stop-Service -Name "fdPHost","FDResPub","upnphost","SSDPSRV" -Force -ErrorAction SilentlyContinue
+    }
+    # Set registry for network discovery
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" -Name "EnableMDNS" -Value $value -Type DWord -Force
+}
+
+function Set-DNSCloudflareGoogle {
+    Write-Host "Flushing DNS and setting DNS to Cloudflare and Google" -ForegroundColor Yellow
+    $dns = @("1.1.1.1","8.8.8.8")
+    $adapters = Get-DnsClient | Where-Object { $_.InterfaceAlias -notlike "*Loopback*" }
+    foreach ($adapter in $adapters) {
+        Set-DnsClientServerAddress -InterfaceIndex $adapter.InterfaceIndex -ServerAddresses $dns -ErrorAction SilentlyContinue
+    }
+    ipconfig /flushdns | Out-Null
+    Write-Host "DNS set to Cloudflare and Google and cache flushed."
+}
+
+function Set-NetBIOSoverTCPIP {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action NetBIOS over TCP/IP" -ForegroundColor Yellow
+    $value = if ($Action -eq "Enable") { 1 } else { 2 } # 1=Enable, 2=Disable
+    $adapters = Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled }
+    foreach ($adapter in $adapters) {
+        $adapter.SetTcpipNetbios($value) | Out-Null
+    }
+    Write-Host "NetBIOS over TCP/IP set to $Action."
+}
+
+function Set-LoginAnimations {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Login Animations" -ForegroundColor Yellow
+    $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\TestHooks"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "AnimationsEnabled" -Type DWord -Value $value -Force
+}
+
+function Set-LastUserDisplay {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Last User Display on Login Screen" -ForegroundColor Yellow
+    $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    $value = if ($Action -eq "Enable") { 0 } else { 1 }
+    Set-ItemProperty -Path $regPath -Name "DontDisplayLastUserName" -Type DWord -Value $value -Force
+}
+
+function Set-PasswordExpiration {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Password Expiration" -ForegroundColor Yellow
+    if ($Action -eq "Disable") {
+        # Set password to never expire for all local users
+        Get-LocalUser | Where-Object { $_.Enabled -eq $true } | ForEach-Object {
+            Set-LocalUser -Name $_.Name -PasswordNeverExpires $true
+        }
+    } elseif ($Action -eq "Enable") {
+        # Set password expiration to default (user must change password periodically)
+        Get-LocalUser | Where-Object { $_.Enabled -eq $true } | ForEach-Object {
+            Set-LocalUser -Name $_.Name -PasswordNeverExpires $false
+        }
+    }
+}
+
+function Set-CtrlAltDelRequirement {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Enable", "Disable")]
+        [string]$Action
+    )
+    Write-Host "$Action Ctrl+Alt+Del Requirement for Login" -ForegroundColor Yellow
+    $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    $value = if ($Action -eq "Enable") { 1 } else { 0 }
+    Set-ItemProperty -Path $regPath -Name "DisableCAD" -Type DWord -Value (1 - $value) -Force
+    # Note: DisableCAD=0 means require Ctrl+Alt+Del, DisableCAD=1 means do not require
+}
+
+function Clear-TempAndDownloads {
+    param(
+        [Parameter(Mandatory=$false)]
+        [int]$Days = 30
+    )
+    Write-Host "Clearing Temp folders and Downloads older than $Days days..." -ForegroundColor Yellow
+
+    $tempPaths = @(
+        "$env:TEMP",
+        "$env:LOCALAPPDATA\Temp",
+        "$env:windir\Temp"
+    )
+    foreach ($path in $tempPaths) {
+        if (Test-Path $path) {
+            Get-ChildItem -Path $path -Recurse -Force -ErrorAction SilentlyContinue | 
+                Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
+                Remove-Item -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    $downloads = "$env:USERPROFILE\Downloads"
+    if (Test-Path $downloads) {
+        Get-ChildItem -Path $downloads -Recurse -Force -ErrorAction SilentlyContinue |
+            Where-Object { !$_.PSIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$Days) } |
+            Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+
+    Write-Host "Temp folders and Downloads cleaned."
+}
+
+function Clean-WindowsUpdateCache {
+    Write-Host "Cleaning Windows Update Cache..." -ForegroundColor Yellow
+    # Stop Windows Update service
+    Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
+    $updateCache = "$env:SystemRoot\SoftwareDistribution\Download"
+    if (Test-Path $updateCache) {
+        Get-ChildItem -Path $updateCache -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+    }
+    # Start Windows Update service
+    Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+    Write-Host "Windows Update Cache cleaned."
+}
+
+function Disable-SuggestedAppsInStart {
+    Write-Host "Disabling 'Suggested Apps' in Start Menu..." -ForegroundColor Yellow
+    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338388Enabled" -Value 0 -Force
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338389Enabled" -Value 0 -Force
+    Set-ItemProperty -Path $regPath -Name "SubscribedContent-338393Enabled" -Value 0 -Force
+    Write-Host "'Suggested Apps' in Start Menu disabled."
+}
+
+function Clear-PrefetchAndRecentFiles {
+    Write-Host "Clearing Prefetch and Recent File Lists..." -ForegroundColor Yellow
+    # Clear Prefetch
+    $prefetch = "$env:SystemRoot\Prefetch"
+    if (Test-Path $prefetch) {
+        Get-ChildItem -Path $prefetch -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+    # Clear Recent Files
+    $recent = "$env:APPDATA\Microsoft\Windows\Recent"
+    if (Test-Path $recent) {
+        Get-ChildItem -Path $recent -Recurse -Force -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+    Write-Host "Prefetch and Recent File Lists cleared."
+}
+
+#
 
 <# NOT WORKING IN WIN11
 function Disable-ConsumerFeatures { # Disable Consumer Features
